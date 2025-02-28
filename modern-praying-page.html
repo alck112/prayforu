@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶祈禱中</title>
+    <!-- TailwindCSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+        :root {
+            --light-bg: #f8f9fa;
+            --light-text: #343a40;
+            --light-primary: #4e73df;
+            --light-secondary: #e0e5f2;
+            --light-accent: #7289da;
+            
+            --dark-bg: #121212;
+            --dark-text: #f8f9fa;
+            --dark-primary: #6d9eeb;
+            --dark-secondary: #2d3748;
+            --dark-accent: #9baaf0;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background-image: var(--bg-pattern);
+            background-size: cover;
+        }
+        
+        .dark .dark-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .light-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .praying-hands {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .main-content {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800" id="body">
+    <div id="particles-js" class="particles"></div>
+    
+    <button onclick="toggleTheme()" class="theme-toggle-btn p-3 rounded-full bg-white dark:bg-gray-800 light-shadow dark:dark-shadow focus:outline-none" id="theme-toggle">
+        <i class="fas fa-moon text-indigo-600 dark:hidden text-xl"></i>
+        <i class="fas fa-sun text-yellow-400 hidden dark:block text-xl"></i>
+    </button>
+    
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="main-content fade-in max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl light-shadow dark:dark-shadow p-8 text-center">
+            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-8 animate__animated animate__fadeIn">祈禱中</h1>
+            
+            <div class="praying-hands text-8xl text-indigo-600 dark:text-indigo-400 mb-10 animate__animated animate__fadeIn animate__delay-1s">
+                <i class="fa-solid fa-hands-praying"></i>
+            </div>
+            
+            <div class="loading flex justify-center mb-6 animate__animated animate__fadeIn animate__delay-2s">
+                <div class="relative">
+                    <div class="w-16 h-16 border-4 border-indigo-200 dark:border-gray-700 border-dashed rounded-full animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 檢查用戶偏好或當前儲存的主題設置
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.body.classList.remove('bg-gray-100');
+            document.body.classList.add('bg-gray-900');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.add('bg-gray-100');
+            document.body.classList.remove('bg-gray-900');
+        }
+        
+        // 主題切換功能
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.body.classList.add('bg-gray-100');
+                document.body.classList.remove('bg-gray-900');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                document.body.classList.remove('bg-gray-100');
+                document.body.classList.add('bg-gray-900');
+                localStorage.theme = 'dark';
+            }
+        }
+        
+        // 粒子效果初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: document.documentElement.classList.contains('dark') ? "#6d9eeb" : "#4e73df" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: document.documentElement.classList.contains('dark') ? "#9baaf0" : "#7289da",
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    }
+                },
+                retina_detect: true
+            });
+        });
+    </script>
+</body>
+</html>
